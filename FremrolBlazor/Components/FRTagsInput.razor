@@ -1,0 +1,68 @@
+<div class="d-flex flex-wrap p-3 rounded-5 text-white @ContainerClass" style="@ContainerStyle">
+    @for (int i = 0; i < _tags.Count; i++)
+    {
+        int idx = i;
+        
+        <div class="d-flex position-relative bg-gray rounded-5" style="padding-block: 6px;">
+            <div class="position-absolute d-flex rounded-5 bg-light-gray hover cursor-pointer top-0 start-0" style="height: 100%;" @onclick="() => RemoveTagAt(idx)"><img class="my-auto" style="padding-inline: 13px; filter: invert(30%)" src="media/svg/cross.svg"></div>
+            <span class="ps-5 pe-3">@_tags[idx]</span>
+        </div>
+    }
+    
+    <input @bind="_input" @bind:event="oninput" @onkeydown="OnKeyDown" style="outline: none; background: transparent; border: none;" class="my-auto text-dark-gray flex-grow-1 placeholder-focus" placeholder="@PlaceholderText"/>
+</div>
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? ContainerClass { get; set; }
+    [Parameter] public string? ContainerStyle { get; set; }
+    [Parameter] public string? PlaceholderText { get; set; }
+
+    private string _input = "";
+    private List<string> _tags = new List<string>();
+    
+    private void RemoveTagAt(int idx) => _tags.RemoveAt(idx);
+
+    private void CreateTag()
+    {
+        var str = _input.Trim();
+        
+        if(string.IsNullOrWhiteSpace(str))
+            return;
+
+        var strSplit = str.Split("; ");
+
+        for (int i = 0; i < strSplit.Length; i++)
+        {
+            if(_tags.Contains(strSplit[i]))
+                continue;
+
+            _tags.Add(strSplit[i]);
+        }
+        
+        _input = String.Empty;
+    }
+
+    private void OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Backspace" && _input.Trim().Length == 0 && _tags.Count > 0)
+        {
+            _tags.RemoveAt(_tags.Count - 1);
+            return;
+        }
+        
+        if (e.Key != "Enter" && e.Key != "Tab")
+            return;
+
+        CreateTag();
+    }
+
+    public string CopyTags() => string.Join("; ", _tags);
+
+    public void PasteTags(string input)
+    {
+        _input = input;
+        CreateTag();
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,25 @@
+@using Microsoft.JSInterop
+
+@inject IJSRuntime _js;
+
+<textarea id="@Id" class="textarea-dark px-3 py-2 placeholder-focus @Class" style="border-radius: 15px; @Style" rows="@MinRows" 
+    oninput="OnTextAreaInput(this, @(AddRowOnNewLine ? "true" : "false"))" placeholder="@Placeholder">@Text</textarea>
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public string? Text { get; set; }
+    
+    [Parameter] public int? MinRows { get; set; } = 1;
+    [Parameter] public int? MaxRows { get; set; } = 0;
+
+    [Parameter] public bool AddRowOnNewLine { get; set; } = true;
+    
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        _js.InvokeVoidAsync("SetMinMaxHeightTextArea", MinRows, MaxRows, Id);
+    }
+}

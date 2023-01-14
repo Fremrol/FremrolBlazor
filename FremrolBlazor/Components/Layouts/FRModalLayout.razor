@@ -1,0 +1,70 @@
+@using FremrolBlazor.Services
+
+<div class="modal fade show d-block" tabindex="-1">
+    <div class="modal-backdrop fade show" @onclick="OnCloseModal" style="z-index: -1"></div>
+
+    <div class="modal-dialog modal-dialog-centered @DialogClass" style="@DialogStyle">
+        <div class="modal-content bg-gray rounded-5 overflow-hidden border-0 bg-shadow @Class" style="@Style">
+            @if (UseCustomHeader == false)
+            {
+                <div class="modal-header bg-light-gray d-grid p-2 border-0 @HeaderClass" style="grid-template-columns: 1fr 1fr 1fr; @(HeaderTextCentered ? "justify-items: center;" : "") @HeaderStyle">
+                    <span class="@HeaderTextClass" style="grid-column-start: @(HeaderTextCentered ? "2" : "1"); font-size: 18px; @HeaderTextStyle">@HeaderText</span>
+                    <button class="ms-auto bg-gray border-0 d-flex" style="padding: 9px; border-radius: 10px; grid-column-start: 3" @onclick="OnCloseModal"><img style="width: 16px; height: 16px;" src="media/svg/cross.svg" alt="x"/></button>
+                </div>
+            }
+            else
+            {
+                <div class="modal-header @HeaderClass" style="@HeaderStyle">
+                    @HeaderFragment
+                </div>
+            }
+            
+            <div class="modal-body @BodyClass" style="padding: 10px; @BodyStyle">
+                @BodyFragment
+            </div>
+            
+            @if (UseFooter)
+            {
+                <div class="modal-footer border-0 @FooterClass" style="@FooterStyle">
+                    @FooterFragment
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject] private ModalService? ModalService { get; set; }
+    
+    [CascadingParameter] private string? Id { get; set; }
+    
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    [Parameter] public string? DialogClass { get; set; }
+    [Parameter] public string? DialogStyle { get; set; }
+    [Parameter] public string? HeaderClass { get; set; }
+    [Parameter] public string? HeaderStyle { get; set; }
+    [Parameter] public string? HeaderTextClass { get; set; }
+    [Parameter] public string? HeaderTextStyle { get; set; }
+    [Parameter] public string? BodyClass { get; set; }
+    [Parameter] public string? BodyStyle { get; set; }
+    [Parameter] public string? FooterClass { get; set; }
+    [Parameter] public string? FooterStyle { get; set; }
+    [Parameter] public string? HeaderText { get; set; }
+    
+    [Parameter] public bool HeaderTextCentered { get; set; } = true;
+    [Parameter] public bool UseCustomHeader { get; set; }
+    [Parameter] public bool UseFooter { get; set; } = true;
+    
+    [Parameter] public RenderFragment? HeaderFragment { get; set; }
+    [Parameter] public RenderFragment? BodyFragment { get; set; }
+    [Parameter] public RenderFragment? FooterFragment { get; set; }
+    
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private void OnCloseModal()
+    {
+        OnClose.InvokeAsync();
+        ModalService!.Close(Id!);
+    }
+}

@@ -1,0 +1,13 @@
+.rounded-5 {
+    border-radius: 1rem !important;;
+}
+
+.input-black {
+    color: #878787;
+    background: #121213;
+    border-radius: 15px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}

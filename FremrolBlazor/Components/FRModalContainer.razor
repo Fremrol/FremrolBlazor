@@ -1,0 +1,16 @@
+@inherits FremrolBlazor.Models.ModalController;
+
+<div id="fremrol-modal-container">
+    @foreach (var modal in Modals)
+    {
+        <div id="@modal.Id">
+            <CascadingValue Value="@modal.Id">
+                @modal.RenderFragment
+            </CascadingValue>
+        </div>
+    }
+</div>
+
+@code {
+    
+}
