@@ -1,3 +1,13 @@
+/* ---- Common (Start) ---- */
+
+
+
+/* ---- Common (End) ---- */
+
+
+
+/* ---- Text Area (Start) ---- */
+
 function OnTextAreaInput(textarea, addRowOnNewLine) {
     if(addRowOnNewLine === false)
         return;
@@ -19,3 +29,5 @@ function SetMinMaxHeightTextArea(minRows, maxRows, id) {
         el.style.minHeight = paddingBlock * 2 + minRows * lh + 'px';
     }
 }
+
+/* ---- Text Area (End) ---- */

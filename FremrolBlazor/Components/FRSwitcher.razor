@@ -1,0 +1,34 @@
+<div class="switcher-container @ContainerClass" style="@ContainerStyle">
+    <input id="@Id" type="checkbox" class="switcher @InputClass" style="@InputStyle" @bind="BindValue"/>
+    
+    @if (UseStateText)
+    {
+        @if (BindValue)
+        {
+            <span id="@(Id)-on" class="switcher-on">@StateOnText</span>
+        }
+        else
+        {
+            <span id="@(Id)-off" class="switcher-off">@StateOffText</span>
+        }
+    }
+</div>
+
+@code {
+    [Parameter] public string? Id { get; set; }
+
+    [Parameter] public string? ContainerClass { get; set; }
+    [Parameter] public string? ContainerStyle { get; set; }
+    
+    [Parameter] public string? InputClass { get; set; }
+    [Parameter] public string? InputStyle { get; set; }
+    
+    [Parameter] public string? StateOnText { get; set; } = "On";
+    [Parameter] public string? StateOffText { get; set; } = "Off";
+
+    [Parameter] public bool BindValue { get; set; }
+    [Parameter] public bool UseStateText { get; set; } = false;
+
+    [Parameter] public int Width { get; set; } = 170;
+    [Parameter] public int Height { get; set; } = 45;
+}

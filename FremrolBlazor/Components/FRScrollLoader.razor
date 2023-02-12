@@ -1,0 +1,121 @@
+@using Microsoft.JSInterop
+
+@typeparam T;
+
+<div @ref="_container" class="scroll-loader-container @Class" style="@Style">
+    @{
+        
+        foreach (var entry in Data)
+        {
+            if (ItemTemplate is not null)
+            {
+                @ItemTemplate(entry)
+            }
+            else
+            {
+                @entry
+            }
+        }
+    }
+</div>
+
+@if (_loading)
+{
+    if (LoadingTemplate is null)
+    {
+        <div class="text-center">
+            <div class="spinner-border @LoadingClass" style="@LoadingStyle" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    }
+    else
+    {
+        @LoadingTemplate
+    }
+}
+
+<div @ref="_checker" class="scroll-loader-checker" style="height: 5px;"></div>
+
+@code {
+    [Inject] private IJSRuntime Js { get; set; } = default!;
+    
+    [Parameter] public List<T> Data { get; set; } = new List<T>();
+
+    [Parameter] public int AmountPerLoad { get; set; } = 10;
+    [Parameter] public int DelayMs { get; set; } = 1000;
+
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    [Parameter] public string? LoadingClass { get; set; }
+    [Parameter] public string? LoadingStyle { get; set; }
+
+    [Parameter] public bool AutoLoadOnInit { get; set; } = true;
+    
+    [Parameter] public RenderFragment<object?>? ItemTemplate { get; set; }
+    [Parameter] public RenderFragment? LoadingTemplate { get; set; }
+    [Parameter] public ItemsRequestDelegate? OnItemsRequested { get; set; }
+    
+    private bool _loading;
+    private bool _isEmpty;
+
+    private DotNetObjectReference<FRScrollLoader<T>>? _dotNetObject;
+    private ElementReference _checker;
+    private ElementReference _container;
+    public delegate Task<IEnumerable<T>> ItemsRequestDelegate(int skip, int amount);
+
+    private IJSObjectReference? _moduleJs;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _dotNetObject = DotNetObjectReference.Create(this);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        
+        if(firstRender == false)
+            return;
+        
+        _moduleJs = await Js.InvokeAsync<IJSObjectReference>("import", "./_content/Fremrol.Blazor/js/frScrollLoader.js");
+        await _moduleJs.InvokeVoidAsync("InitializeScrollLoader", _container, _checker, _dotNetObject, AutoLoadOnInit);
+    }
+
+    [JSInvokable]
+    public async Task<bool> LoadMore(bool ignoreDelay)
+    {
+        if (_isEmpty)
+            return false;
+
+        if (_loading)
+            return true;
+        
+        _loading = true;
+        StateHasChanged();
+        
+        if(ignoreDelay == false)
+            await Task.Delay(DelayMs);
+
+        if (OnItemsRequested != null)
+        {
+            var elements = await OnItemsRequested.Invoke(Data.Count, AmountPerLoad);
+            var amount = Data.Count;
+            Data.AddRange(elements);
+                
+            _isEmpty = amount == Data.Count;
+        }
+
+        _loading = false;
+        StateHasChanged();
+        return true;
+    }
+
+    public void Dispose()
+    {
+        _dotNetObject?.Dispose();
+        _moduleJs?.DisposeAsync();
+    }
+}

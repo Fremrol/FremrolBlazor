@@ -399,3 +399,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Ignore duplicate of LICENSE and README files
+FremrolBlazor/LICENSE.md
+FremrolBlazor/README.md

@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FremrolBlazor", "FremrolBlazor\FremrolBlazor.csproj", "{7AD1F1C2-D2C4-43A3-883B-1570301598B3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{2D512D27-89F4-437F-ACD1-7437FFD8DD5B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{7AD1F1C2-D2C4-43A3-883B-1570301598B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AD1F1C2-D2C4-43A3-883B-1570301598B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AD1F1C2-D2C4-43A3-883B-1570301598B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D512D27-89F4-437F-ACD1-7437FFD8DD5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D512D27-89F4-437F-ACD1-7437FFD8DD5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D512D27-89F4-437F-ACD1-7437FFD8DD5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D512D27-89F4-437F-ACD1-7437FFD8DD5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

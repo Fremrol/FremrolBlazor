@@ -1,0 +1,40 @@
+@page "/"
+
+<div class="">
+    
+    <FRScrollLoader Data="_scrollNumbers"
+                    OnItemsRequested="OnItemsRequested"
+                    Class="w-100 overflow-visible"
+                    AmountPerLoad="3"
+                    AutoLoadOnInit="true"
+                    LoadingClass="my-2 text-mediumpurple">
+        <ItemTemplate>
+            @{
+                int num = Convert.ToInt32(context);
+                                
+                <div>Number: @num</div>
+            }
+        </ItemTemplate>
+    
+    </FRScrollLoader>
+</div>
+
+@code {
+
+    private List<int> _numbers = Enumerable.Range(1, 100).ToList();
+    private List<int> _scrollNumbers = new List<int>();
+
+    private async Task<IEnumerable<int>?> OnItemsRequested(int skip = 0, int amount = 10)
+    {
+        int count = _numbers.Count;
+        
+        if (skip >= count)
+            return Enumerable.Empty<int>();
+
+        int overflowSkip = skip + amount;
+        int finalAmount = overflowSkip > count ? amount - (overflowSkip - count) : amount;
+
+        return await Task.Run(() => _numbers.GetRange(skip, finalAmount));
+    }
+
+}
